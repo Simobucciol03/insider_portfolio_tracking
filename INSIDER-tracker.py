@@ -1367,11 +1367,11 @@ def main():
     
     # Configurazione database
     DB_CONFIG = {
-        'host': '127.0.0.1',
-        'user': 'root',
-        'password': 'Castagnole2024!',
-        'database': 'insider_analysis',
-        'port': 3306
+        'host': 'xxxxxxxxx',
+        'user': 'xxxx',
+        'password': 'xxxxx',
+        'database': 'xxxxx',
+        'port': xxxx
     }
     
     #CIKS_TO_PROCESS = ['320193']  # Apple Inc.
