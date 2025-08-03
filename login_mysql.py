@@ -1928,15 +1928,15 @@ class PortfolioManager:
         print(f"{'='*120}\n")
 
 
-# Esempio di utilizzo
+# Esempio 
 if __name__ == "__main__":
     # Configurazione database
     DB_CONFIG = {
-        'host': '127.0.0.1',
-        'user': 'root',
-        'password': 'Castagnole2024!',
-        'database': 'portfolio_analysis',
-        'port': 3306
+        'host': 'xxxxx',
+        'user': 'xxxxx',
+        'password': 'xxxxxxx',
+        'database': 'xxxxx',
+        'port': xxxx
     }
             
     # Utilizzo con context manager
