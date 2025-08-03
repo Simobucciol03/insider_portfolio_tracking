@@ -443,11 +443,11 @@ def main():
     
     # Configurazione database
     DB_CONFIG = {
-        'host': '127.0.0.1',
-        'user': 'root',
-        'password': 'Castagnole2024!',
-        'database': 'portfolio_analysis',
-        'port': 3306
+        'host': 'xxxxxx',
+        'user': 'xxxxxx',
+        'password': 'xxxxxx',
+        'database': 'xxxxxx',
+        'port': xxxx
     }
     
     # Lista di CIK da processare
