@@ -289,10 +289,10 @@ class InsiderSalesVisualizer:
         except Exception as e:
             logger.error(f"❌ Errore anche nel fallback Yahoo Finance per {ticker}: {e}")
             return pd.DataFrame()
-    
     def create_insider_sales_chart_FIXED(self, ticker: str, days_back: int = 1825) -> None:
         """
         VERSIONE COMPLETA che mostra SALES (rosso) e PURCHASES (verde) individuali.
+        SOLO VISUALIZZAZIONE - NON SALVA FILE
         """
         try:
             # Calcola periodo
@@ -330,7 +330,7 @@ class InsiderSalesVisualizer:
             
             # 3. Crea il grafico con configurazione specifica per la visualizzazione
             fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 12), 
-                                          gridspec_kw={'height_ratios': [3, 1]})
+                                        gridspec_kw={'height_ratios': [3, 1]})
             
             # 4. Plotta prezzo
             ax1.plot(price_df['Date'], price_df['Close'], 
@@ -359,8 +359,8 @@ class InsiderSalesVisualizer:
                         
                         # Plotta il punto per questa specifica vendita
                         ax1.scatter(plot_date, plot_price, 
-                                  s=float(point_size), color='red', alpha=0.7, 
-                                  edgecolors='darkred', linewidth=1, zorder=5)
+                                s=float(point_size), color='red', alpha=0.7, 
+                                edgecolors='darkred', linewidth=1, zorder=5)
                         
                         sale_points_added += 1
                 
@@ -389,8 +389,8 @@ class InsiderSalesVisualizer:
                         
                         # Plotta il punto per questo specifico acquisto
                         ax1.scatter(plot_date, plot_price, 
-                                  s=float(point_size), color='green', alpha=0.7, 
-                                  edgecolors='darkgreen', linewidth=1, zorder=5)
+                                s=float(point_size), color='green', alpha=0.7, 
+                                edgecolors='darkgreen', linewidth=1, zorder=5)
                         
                         purchase_points_added += 1
                 
@@ -470,15 +470,15 @@ class InsiderSalesVisualizer:
                     sales_daily_agg = daily_transactions[daily_transactions['transaction_type'] == 'sale']
                     if not sales_daily_agg.empty:
                         ax2.bar(pd.to_datetime(sales_daily_agg['transaction_date']), 
-                               sales_daily_agg['transaction_value'] / 1000000,
-                               color='red', alpha=0.6, width=1, label='Vendite')
+                            sales_daily_agg['transaction_value'] / 1000000,
+                            color='red', alpha=0.6, width=1, label='Vendite')
                     
                     # Plotta acquisti (verde, negativo per distinguerli visivamente)
                     purchases_daily_agg = daily_transactions[daily_transactions['transaction_type'] == 'purchase']
                     if not purchases_daily_agg.empty:
                         ax2.bar(pd.to_datetime(purchases_daily_agg['transaction_date']), 
-                               purchases_daily_agg['transaction_value'] / 1000000,  # Già negativo
-                               color='green', alpha=0.6, width=1, label='Acquisti')
+                            purchases_daily_agg['transaction_value'] / 1000000,  # Già negativo
+                            color='green', alpha=0.6, width=1, label='Acquisti')
                     
                     ax2.set_ylabel('Valore Transazioni\nGiornaliere (M$)', fontsize=10)
                     ax2.set_title(f'Volume Transazioni Giornaliero', fontsize=10)
@@ -496,13 +496,8 @@ class InsiderSalesVisualizer:
             
             plt.tight_layout()
             
-            # 10. SALVATAGGIO SEMPRE PRIMA DELLA VISUALIZZAZIONE
-            filename = f'{ticker}_insider_transactions_COMPLETE_{start_date}_{end_date}.png'
-            plt.savefig(filename, dpi=300, bbox_inches='tight', facecolor='white')
-            logger.info(f"💾 Grafico salvato come: {filename}")
-            
-            # 11. MULTIPLE STRATEGIE PER LA VISUALIZZAZIONE
-            logger.info("🖼️ Tentativo visualizzazione grafico...")
+            # 10. VISUALIZZAZIONE SENZA SALVATAGGIO FILE
+            logger.info("🖼️ Visualizzazione grafico...")
             
             success = False
             
@@ -537,35 +532,27 @@ class InsiderSalesVisualizer:
                 except Exception as e:
                     logger.warning(f"⚠️ Strategia 3 fallita: {e}")
             
-            # STRATEGIA 4: Aprire file automaticamente
-            if not success:
-                try:
-                    self._open_file_automatically(filename)
-                    logger.info("✅ Strategia 4: apertura file automatica riuscita")
-                    success = True
-                except Exception as e:
-                    logger.warning(f"⚠️ Strategia 4 fallita: {e}")
-            
-            # FALLBACK: Istruzioni manuali
+            # FALLBACK: Notifica che il grafico è stato creato ma potrebbe non essere visibile
             if not success:
                 logger.error("❌ Tutte le strategie di visualizzazione sono fallite")
-                logger.info(f"📁 APRI MANUALMENTE IL FILE: {os.path.abspath(filename)}")
+                print(f"\n⚠️ ATTENZIONE: Il grafico è stato creato ma potrebbe non essere visibile")
+                print(f"   Verifica le finestre aperte o la configurazione del display")
             else:
                 logger.info("🎉 Grafico visualizzato con successo!")
             
-            # 12. Mantieni il grafico aperto e interattivo
+            # 11. Mantieni il grafico aperto e interattivo
             try:
                 print(f"\n{'='*60}")
                 print(f"📊 GRAFICO CREATO PER {ticker}")
                 print(f"🔴 Vendite insider mostrate: {sale_points_added}")
                 print(f"🟢 Acquisti insider mostrati: {purchase_points_added}")
-                print(f"📁 File salvato: {filename}")
+                print(f"🖼️ Grafico visualizzato (nessun file salvato)")
                 print(f"{'='*60}")
                 
                 if success and plt.get_fignums():
                     input("\n🔍 Premi INVIO per continuare (il grafico rimarrà aperto)...")
                 else:
-                    input(f"\n📁 Apri manualmente: {os.path.abspath(filename)}\nPremi INVIO per continuare...")
+                    input(f"\n⚠️ Il grafico potrebbe non essere visibile. Premi INVIO per continuare...")
             except Exception as e:
                 logger.error(f"❌ Errore durante l'attesa input: {e}")
                 print("Premi INVIO per chiudere il programma...")
@@ -575,7 +562,7 @@ class InsiderSalesVisualizer:
             logger.error(f"❌ Errore nella creazione del grafico: {e}")
             import traceback
             traceback.print_exc()
-    
+            
     def check_ticker_exists(self, ticker: str) -> Dict[str, Any]:
         """
         Verifica se un ticker esiste nel database e restituisce informazioni sui dati disponibili.
